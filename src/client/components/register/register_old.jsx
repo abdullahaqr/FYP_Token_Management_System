@@ -1,16 +1,7 @@
 import React, {Component} from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import loginBanner from '../../assets/images/login-banner.png';
-import axios from 'axios';
-
 class Register extends Component {
-    state = {
-        first_name: '',
-        last_name: '',
-        email: '',
-        phone_number: '',
-        password: '',
-    };
 
     componentDidMount(){
         document.body.classList.add('account-page');
@@ -18,42 +9,7 @@ class Register extends Component {
     componentWillUnmount(){
 		document.body.classList.remove('account-page');
 	}
-
-    handleInputChange = (e) => {
-        this.setState({ [e.target.id]: e.target.value });
-    };
-
-    handleFormSubmit = async (e) => {
-        e.preventDefault();
-
-        const apiUrl = 'http://127.0.0.1:8082/api/v1/sign-up';
-
-        try {
-            const response = await axios.post(apiUrl, {
-                first_name: this.state.first_name,
-                last_name: this.state.last_name,
-                email: this.state.email,
-                phone_number: this.state.phone_number,
-                password: this.state.password,
-                role:"2", //hospital
-            });
-
-            // Handle the response as needed, e.g., show a success message
-            console.log('API response:', response.data);
-
-            // Set redirect to true
-            this.setState({ redirect: true });
-
-        } catch (error) {
-            // Handle errors, e.g., show an error message
-            console.error('API error:', error);
-        }
-    };
-
     render(){
-        if (this.state.redirect) {
-            return <Redirect to="/login" />;
-        }
         return(
             <div className="content">
             <div className="container-fluid">
@@ -69,29 +25,21 @@ class Register extends Component {
                                 </div>
                                 <div className="col-md-12 col-lg-6 login-right">
                                     <div className="login-header">
-                                        <h3>Hospital Register <Link to="/doctor/doctor-register" >Are you a Doctor?</Link></h3>
+                                        <h3>Patient Register <Link to="/doctor/doctor-register" >Are you a Doctor?</Link></h3>
                                     </div>
                                     
                                   
-                                    <form onSubmit={this.handleFormSubmit}>
+                                    <form action="/doctor/doctor-dashboard">
                                         <div className="form-group form-focus">
-                                            <input type="text" className="form-control floating" id="first_name" onChange={this.handleInputChange} />
-                                            <label className="focus-label" htmlFor="first_name">First Name</label>
+                                            <input type="text" className="form-control floating" id="name" />
+                                            <label className="focus-label" htmlFor="name">Name</label>
                                         </div>
                                         <div className="form-group form-focus">
-                                            <input type="text" className="form-control floating" id="last_name" onChange={this.handleInputChange} />
-                                            <label className="focus-label" htmlFor="last_name">Last Name</label>
+                                            <input type="text" className="form-control floating" id="mobile" />
+                                            <label className="focus-label" htmlFor="mobile">Mobile Number</label>
                                         </div>
                                         <div className="form-group form-focus">
-                                            <input type="email" className="form-control floating" id="email" onChange={this.handleInputChange} />
-                                            <label className="focus-label" htmlFor="email">Email</label>
-                                        </div>
-                                        <div className="form-group form-focus">
-                                            <input type="text" className="form-control floating" id="phone_number" onChange={this.handleInputChange} />
-                                            <label className="focus-label" htmlFor="phone_number">Mobile Number</label>
-                                        </div>
-                                        <div className="form-group form-focus">
-                                            <input type="password" className="form-control floating" id="password" onChange={this.handleInputChange} />
+                                            <input type="password" className="form-control floating" id="password" />
                                             <label className="focus-label" htmlFor="password">Create Password</label>
                                         </div>
                                         <div className="text-right">
