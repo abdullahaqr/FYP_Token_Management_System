@@ -4,7 +4,36 @@ import { IMG01, IMG02, IMG03, IMG04, IMG05, IMG06, IMG07, IMG08, IMG012  } from 
 import DoctorSidebar from '../sidebar';
 
 class MypPatient extends Component{
+	constructor(props) {
+        super(props);
+        this.state = {
+            patients: [], // Initialize an empty array to store patient data
+        };
+    }
+
+    componentDidMount() {
+        // Fetch patient data when the component mounts
+        this.fetchPatients();
+    }
+
+    fetchPatients() {
+		// Make a GET request to the API endpoint
+		fetch('http://127.0.0.1:8082/api/v1/doctor-patient')
+			.then((response) => response.json())
+			.then((data) => {
+				// Update the state with the fetched patient data
+				console.log(data);
+				this.setState({ patients: data.Patients || [] });
+			})
+			.catch((error) => {
+				console.error('Error fetching patient data:', error);
+			});
+	}
+
     render(){
+		const { patients } = this.state;
+		
+		// console.log(patients);
         return(
             <div>
              
@@ -35,262 +64,55 @@ class MypPatient extends Component{
 						<div className="col-md-7 col-lg-8 col-xl-9">
 						
 							<div className="row row-grid">
-								<div className="col-md-6 col-lg-4 col-xl-3">
-									<div className="card widget-profile pat-widget-profile">
-										<div className="card-body">
-											<div className="pro-widget-content">
-												<div className="profile-info-widget">
-													<Link to="/doctor/patient-profile" className="booking-doc-img">
-														<img src={IMG01} alt="User" />
-													</Link>
-													<div className="profile-det-info">
-														<h3><Link to="/doctor/patient-profile">Richard Wilson</Link></h3>
-														
-														<div className="patient-details">
-															<h5><b>Patient ID :</b> P0016</h5>
-															<h5 className="mb-0"><i className="fas fa-map-marker-alt"></i> Alabama, USA</h5>
+								{patients.map((patient) => (
+									<div key={patient.first_name} className="col-md-6 col-lg-4 col-xl-3">
+										<div className="card widget-profile pat-widget-profile">
+											{/* Render patient information based on the fetched data */}
+											<div className="card-body">
+												<div className="pro-widget-content">
+													<div className="profile-info-widget">
+														{/* Update link path and image source accordingly */}
+														<Link to={`/doctor/patient-profile/${patient.first_name}`} className="booking-doc-img">
+															{/* Use actual image source or default image */}
+															<img src={patient.image_url} alt="User" />
+														</Link>
+														<div className="profile-det-info">
+															<h3>
+																<Link to={`/doctor/patient-profile/${patient.first_name}`}>
+																	{`${patient.first_name} ${patient.last_name}`}
+																</Link>
+															</h3>
+															<div className="patient-details">
+																<h5>
+																<b>Email :</b> {patient.email}
+																</h5>
+																<h5 className="mb-0">
+																	<i className="fas fa-map-marker-alt"></i> {`${patient.city}, ${patient.country}`}
+																</h5>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-											<div className="patient-info">
-												<ul>
-													<li>Phone <span>+1 952 001 8563</span></li>
-													<li>Age <span>38 Years, Male</span></li>
-													<li>Blood Group <span>AB+</span></li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-								
-								<div className="col-md-6 col-lg-4 col-xl-3">
-									<div className="card widget-profile pat-widget-profile">
-										<div className="card-body">
-											<div className="pro-widget-content">
-												<div className="profile-info-widget">
-													<Link to="/doctor/patient-profile" className="booking-doc-img">
-														<img src={IMG02} alt="User" />
-													</Link>
-													<div className="profile-det-info">
-													<h3><Link to="/doctor/patient-profile">Charlene Reed</Link></h3>
-														
-														
-														<div className="patient-details">
-															<h5><b>Patient ID :</b> P0001</h5>
-															<h5 className="mb-0"><i className="fas fa-map-marker-alt"></i> North Carolina, USA</h5>
-														</div>
-													</div>
+												<div className="patient-info">
+													<ul>
+														<li>
+															Phone <span>{patient.phone_number}</span>
+														</li>
+														<li>
+															Gender <span>{patient.gender}</span>
+														</li>
+														<li>
+															Date of Birth <span>{patient.dob}</span>
+														</li>
+														<li>
+															Hospital <span>{patient.hospital}</span>
+														</li>
+													</ul>
 												</div>
 											</div>
-											<div className="patient-info">
-												<ul>
-													<li>Phone <span>+1 828 632 9170</span></li>
-													<li>Age <span>29 Years, Female</span></li>
-													<li>Blood Group <span>O+</span></li>
-												</ul>
-											</div>
 										</div>
 									</div>
-								</div>
-								
-								<div className="col-md-6 col-lg-4 col-xl-3">
-									<div className="card widget-profile pat-widget-profile">
-										<div className="card-body">
-											<div className="pro-widget-content">
-												<div className="profile-info-widget">
-												<Link to="/doctor/patient-profile" className="booking-doc-img">
-														<img src={IMG03} alt="User" />
-													</Link>
-													<div className="profile-det-info">
-													<h3><Link to="/doctor/patient-profile">Travis Trimble</Link></h3>
-														
-														<div className="patient-details">
-															<h5><b>Patient ID :</b> PT0002</h5>
-															<h5 className="mb-0"><i className="fas fa-map-marker-alt"></i> Maine, USA</h5>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div className="patient-info">
-												<ul>
-													<li>Phone <span>+1 207 729 9974</span></li>
-													<li>Age <span>23 Years, Male</span></li>
-													<li>Blood Group <span>B+</span></li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-								
-								<div className="col-md-6 col-lg-4 col-xl-3">
-									<div className="card widget-profile pat-widget-profile">
-										<div className="card-body">
-											<div className="pro-widget-content">
-												<div className="profile-info-widget">
-												<Link to="/doctor/patient-profile" className="booking-doc-img">
-														<img src={IMG012} alt="User" />
-													</Link>
-													<div className="profile-det-info">
-													<h3><Link to="/doctor/patient-profile">Travis Trimble</Link></h3>
-														<div className="patient-details">
-															<h5><b>Patient ID :</b> PT0003</h5>
-															<h5 className="mb-0"><i className="fas fa-map-marker-alt"></i> Indiana, USA</h5>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div className="patient-info">
-												<ul>
-													<li>Phone <span>+1 260 724 7769</span></li>
-													<li>Age <span>32 Years, Male</span></li>
-													<li>Blood Group <span>A+</span></li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-								
-								<div className="col-md-6 col-lg-4 col-xl-3">
-									<div className="card widget-profile pat-widget-profile">
-										<div className="card-body">
-											<div className="pro-widget-content">
-												<div className="profile-info-widget">
-													<Link to="/doctor/patient-profile" className="booking-doc-img">
-														<img src={IMG04} alt="User" />
-													</Link>
-													<div className="profile-det-info">
-													<h3><Link to="/doctor/patient-profile">Michelle Fairfax</Link></h3>
-														<div className="patient-details">
-															<h5><b>Patient ID :</b> PT0004</h5>
-															<h5 className="mb-0"><i className="fas fa-map-marker-alt"></i> Indiana, USA</h5>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div className="patient-info">
-												<ul>
-													<li>Phone <span>+1 504 368 6874</span></li>
-													<li>Age <span>25 Years, Female</span></li>
-													<li>Blood Group <span>B+</span></li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-								
-								<div className="col-md-6 col-lg-4 col-xl-3">
-									<div className="card widget-profile pat-widget-profile">
-										<div className="card-body">
-											<div className="pro-widget-content">
-												<div className="profile-info-widget">
-												<Link to="/doctor/patient-profile" className="booking-doc-img">
-														<img src={IMG05} alt="User" />
-													</Link>
-													<div className="profile-det-info">
-													<h3><Link to="/doctor/patient-profile">Gina Moore</Link></h3>
-														<div className="patient-details">
-															<h5><b>Patient ID :</b> PT0005</h5>
-															<h5 className="mb-0"><i className="fas fa-map-marker-alt"></i> Florida, USA</h5>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div className="patient-info">
-												<ul>
-													<li>Phone <span>+1 954 820 7887</span></li>
-													<li>Age <span>25 Years, Female</span></li>
-													<li>Blood Group <span>AB-</span></li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-								
-								<div className="col-md-6 col-lg-4 col-xl-3">
-									<div className="card widget-profile pat-widget-profile">
-										<div className="card-body">
-											<div className="pro-widget-content">
-												<div className="profile-info-widget">
-												<Link to="/doctor/patient-profile" className="booking-doc-img">
-														<img src={IMG06} alt="User" />
-													</Link>
-													<div className="profile-det-info">
-													<h3><Link to="/doctor/patient-profile">Gina Moore</Link></h3>
-														<div className="patient-details">
-															<h5><b>Patient ID :</b> PT0006</h5>
-															<h5 className="mb-0"><i className="fas fa-map-marker-alt"></i> Kentucky, USA</h5>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div className="patient-info">
-												<ul>
-													<li>Phone <span>+1 315 384 4562</span></li>
-													<li>Age <span>14 Years, Female</span></li>
-													<li>Blood Group <span>O-</span></li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-								
-								<div className="col-md-6 col-lg-4 col-xl-3">
-									<div className="card widget-profile pat-widget-profile">
-										<div className="card-body">
-											<div className="pro-widget-content">
-												<div className="profile-info-widget">
-												<Link to="/doctor/patient-profile"  className="booking-doc-img">
-														<img src={IMG07} alt="User" />
-													</Link>
-													<div className="profile-det-info">
-													<h3><Link to="/doctor/patient-profile">Joan Gardner</Link></h3>
-														<div className="patient-details">
-															<h5><b>Patient ID :</b> PT0007</h5>
-															<h5 className="mb-0"><i className="fas fa-map-marker-alt"></i> California, USA</h5>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div className="patient-info">
-												<ul>
-													<li>Phone <span>+1 707 2202 603</span></li>
-													<li>Age <span>25 Years, Female</span></li>
-													<li>Blood Group <span>A-</span></li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-								
-								<div className="col-md-6 col-lg-4 col-xl-3">
-									<div className="card widget-profile pat-widget-profile">
-										<div className="card-body">
-											<div className="pro-widget-content">
-												<div className="profile-info-widget">
-													<Link to="/doctor/patient-profile" className="booking-doc-img">
-														<img src={IMG08} alt="User" />
-													</Link>
-													<div className="profile-det-info">
-													<h3><Link to="/doctor/patient-profile">Joan Gardner</Link></h3>
-														<div className="patient-details">
-															<h5><b>Patient ID :</b> PT0007</h5>
-															<h5 className="mb-0"><i className="fas fa-map-marker-alt"></i> New Jersey, USA</h5>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div className="patient-info">
-												<ul>
-													<li>Phone <span>+1 973 773 9497</span></li>
-													<li>Age <span>28 Years, Male</span></li>
-													<li>Blood Group <span>O+</span></li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-								
+								))}
 							</div>
 
 						</div>

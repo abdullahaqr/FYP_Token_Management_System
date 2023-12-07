@@ -2,6 +2,68 @@ import React,{ Component } from 'react';
 import DashboardSidebar from '../sidebar/index';
 
 class Password extends Component{
+	constructor(props) {
+		super(props);
+	
+		this.state = {
+		  password: '',
+		  new_password: '',
+		  confirmPassword: '',
+		};
+	  }
+	
+	  handleInputChange = (event) => {
+		const { name, value } = event.target;
+		this.setState({ [name]: value });
+	  };
+	
+	  handleSubmit = (event) => {
+		event.preventDefault();
+	
+		const { password, new_password, confirmPassword } = this.state;
+		const userId = 5; // You may want to get the user ID dynamically
+	
+		// Check if new password and confirm password match
+		if (new_password !== confirmPassword) {
+		  alert("New password and confirm password don't match");
+		  return;
+		}
+	
+		// Make the API call
+		fetch(`http://127.0.0.1:8082/api/v1/users/${userId}/change-password`, {
+		  method: 'PUT',
+		  headers: {
+			'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({
+			password,
+			new_password,
+		  }),
+		})
+		  .then((response) => {
+				if (!response.ok) {
+					alert('Invalid password');
+					throw new Error('Invalid password');
+				}
+				return response.json();
+		   })
+		  .then((data) => {
+			console.log('API response:', data);
+			// Handle success or error accordingly
+      		alert('Password changed successfully');
+			
+			this.setState({
+				password: '',
+				new_password: '',
+				confirmPassword: '',
+			});
+		  })
+		  .catch((error) => {
+			console.error('Error making API call:', error);
+			// Handle error
+		  });
+	  };
+
     render(){
         return(
             <div>
@@ -30,18 +92,36 @@ class Password extends Component{
                        <div className="col-md-7 col-lg-8 col-xl-9">
                                 <div className="card">
                                      <div className="card-body">
-                                     <form>
+                                     <form onSubmit={this.handleSubmit}>
 												<div className="form-group">
 													<label>Old Password</label>
-													<input type="password" className="form-control" />
+													<input 
+														type="password" 
+														className="form-control" 
+														name="password"
+														value={this.state.password}
+														onChange={this.handleInputChange}
+													/>
 												</div>
 												<div className="form-group">
 													<label>New Password</label>
-													<input type="password" className="form-control" />
+													<input
+														type="password"
+														className="form-control"
+														name="new_password"
+														value={this.state.new_password}
+														onChange={this.handleInputChange}
+													/>
 												</div>
 												<div className="form-group">
 													<label>Confirm Password</label>
-													<input type="password" className="form-control" />
+													<input
+														type="password"
+														className="form-control"
+														name="confirmPassword"
+														value={this.state.confirmPassword}
+														onChange={this.handleInputChange}
+													/>
 												</div>
 												<div className="submit-section">
 													<button type="submit" className="btn btn-primary submit-btn">Save Changes</button>

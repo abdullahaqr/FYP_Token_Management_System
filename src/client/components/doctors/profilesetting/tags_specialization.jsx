@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
-class Memberships extends Component {
+class SpecializationTagsInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: [{ id: "", Awards: "", Year: "" }]
+      users: [{ id: "", specialization_name: "" }]
     };
     this.removeClick = this.removeClick.bind(this);
     this.addClick = this.addClick.bind(this);
@@ -18,50 +18,45 @@ class Memberships extends Component {
     }
 
     addClick() {
-        const { awardsData, onChange } = this.props;
+        const { specializationData, onChange } = this.props;
       
-        // Create a new array with the updated awardsData
-        const updatedData = [...awardsData, { Awards: "", Year: "" }];
+        // Create a new array with the updated specializationData
+        const updatedData = [...specializationData, { specialization_name: "" }];
       
         // Notify the parent component about the change
         onChange(updatedData);
     }
 
     handleDelete = (id) => {
-        const { awardsData, onChange } = this.props;
+        const { specializationData, onChange } = this.props;
     
-        const updatedData = awardsData.filter(item => item.id !== id);
+        const updatedData = specializationData.filter(item => item.id !== id);
       
         onChange(updatedData);
       };
 
     handleChange = (e, i) => {
         const { name, value } = e.target;
-        const { onChange, awardsData } = this.props;
-        const updatedData = awardsData.map((item, index) =>
+        const { onChange, specializationData } = this.props;
+        const updatedData = specializationData.map((item, index) =>
         index === i ? { ...item, [name]: value } : item
         );
         onChange(updatedData);
     };
     createUI(){
-        const { awardsData } = this.props;
-        return awardsData.map((el, i) => (
+        const { specializationData } = this.props;
+        return specializationData.map((el, i) => (
 
         <div className="row form-row" key={i} id={'awards' + i}>
-                <div className="col-12 col-md-6 col-lg-5">
+                <div className="col-12 col-md-6 col-lg-11">
                 <input type="hidden" className="form-control" name='id' value={el.id} onChange={(e) => this.handleChange(e, i)}/>
                     
                     <div className="form-group">
                         {/* <label>Degree</label> */}
-                        <input type="text" className="form-control" placeholder='Award Name' name='award_Name' value={el.award_Name} onChange={(e) => this.handleChange(e, i)} />
+                        <input type="text" className="form-control" placeholder='Service Name' name='specialization_name' value={el.specialization_name} onChange={(e) => this.handleChange(e, i)} />
                     </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-5">
-                    <div className="form-group">
-                        {/* <label>College/Institute</label> */}
-                        <input type="text" className="form-control" placeholder='Award Year' name='award_year' value={el.award_year} onChange={(e) => this.handleChange(e, i)} />
-                    </div> 
-                </div>
+                
     
             {  parseInt(i) !== -1 ? 
             <div className="col-12 col-md-6 col-lg-1">
@@ -82,7 +77,6 @@ class Memberships extends Component {
     return (
       <div className="card">
         <div className="card-body">
-          <h4 className="card-title">Awards</h4>
           <div className="education-info">
             <div className="row form-row education-cont">
               <div className="col-12 col-md-10 col-lg-11">
@@ -121,4 +115,4 @@ class Memberships extends Component {
   }
 }
 
-export default Memberships;
+export default SpecializationTagsInput;
