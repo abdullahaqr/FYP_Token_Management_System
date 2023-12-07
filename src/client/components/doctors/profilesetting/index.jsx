@@ -43,7 +43,7 @@ class ProfileSetting extends Component {
 
 	componentDidMount() {
 		// Fetch data from the API
-		fetch('http://127.0.0.1:8082/api/v1/doctors/1')
+		fetch('http://127.0.0.1:8000/api/v1/doctors/1')
 			.then((response) => response.json())
 			.then((data) => {
 			this.setState({
@@ -114,7 +114,7 @@ class ProfileSetting extends Component {
 		  social_media: socialMedia,
 		};
 	
-		fetch('http://127.0.0.1:8082/api/v1/doctors/1', {
+		fetch('http://127.0.0.1:8000/api/v1/doctors/1', {
 		  method: 'PUT',
 		  headers: {
 			'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ class ProfileSetting extends Component {
 		const formData = new FormData();
 		formData.append('image_url', this.state.selectedFile);
 		// Assuming you are using the fetch API for the API request
-		fetch('http://127.0.0.1:8082/api/v1/image/3', {
+		fetch('http://127.0.0.1:8000/api/v1/image/3', {
 		  method: 'PUT',
 		  body: formData,
 		})

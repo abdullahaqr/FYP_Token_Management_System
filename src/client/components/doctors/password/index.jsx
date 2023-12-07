@@ -30,7 +30,7 @@ class Password extends Component{
 		}
 	
 		// Make the API call
-		fetch(`http://127.0.0.1:8082/api/v1/users/${userId}/change-password`, {
+		fetch(`http://127.0.0.1:8000/api/v1/users/${userId}/change-password`, {
 		  method: 'PUT',
 		  headers: {
 			'Content-Type': 'application/json',

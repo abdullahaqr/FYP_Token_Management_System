@@ -25,7 +25,7 @@ class ForgotPassword  extends Component {
 		// 	'',
 		// 	{ email: this.state.email }
 		//   );
-		  fetch(`http://127.0.0.1:8082/api/v1/users/forgot-password`, {
+		  fetch(`http://127.0.0.1:8000/api/v1/users/forgot-password`, {
 		  method: 'POST',
 		  headers: {
 			'Content-Type': 'application/json',

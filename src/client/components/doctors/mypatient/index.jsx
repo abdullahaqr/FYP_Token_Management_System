@@ -18,7 +18,7 @@ class MypPatient extends Component{
 
     fetchPatients() {
 		// Make a GET request to the API endpoint
-		fetch('http://127.0.0.1:8082/api/v1/doctor-patient')
+		fetch('http://127.0.0.1:8000/api/v1/doctor-patient')
 			.then((response) => response.json())
 			.then((data) => {
 				// Update the state with the fetched patient data

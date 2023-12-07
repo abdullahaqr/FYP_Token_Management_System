@@ -27,7 +27,6 @@ class DoctorRegister extends Component {
     handleFormSubmit = async (e) => {
         e.preventDefault();
 
-        // const apiUrl = 'http://127.0.0.1:8082/api/v1/sign-up';
         const apiUrl = 'http://127.0.0.1:8000/api/v1/sign-up';
 
         try {
