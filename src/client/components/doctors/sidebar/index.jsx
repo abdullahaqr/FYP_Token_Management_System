@@ -2,20 +2,71 @@ import React,{ Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav';
 import IMG01 from '../../../assets/images/doctor-thumb-02.jpg';
+
+
+const accessToken = localStorage.getItem('access_token');
+const user_id = localStorage.getItem('u_id');
+const role = localStorage.getItem('role');
 class DoctorSidebar extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+          doctorName: '',
+          imageUrl: '',
+          doctorEmail: '',
+        };
+    }
+    
+    componentDidMount() {
+
+        if (accessToken) {
+            this.fetchUserInfo(accessToken, user_id);
+        }
+    }
+
+
+    fetchUserInfo(accessToken, user_id) {
+        // Replace 'YOUR_USERINFO_ENDPOINT' with the actual userinfo endpoint provided by your OAuth server
+        const userinfoEndpoint = `http://127.0.0.1:8000/api/v1/users/${user_id}/profile`;
+    
+        fetch(userinfoEndpoint, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data.image_url);
+            const doctorName = `${data.first_name} ${data.last_name}`;
+            const imageUrl = data.image_url;
+            const doctorEmail = data.email;
+            
+            this.setState({
+              doctorName,
+              doctorEmail,
+              imageUrl,
+            });
+            
+          })
+          .catch((error) => {
+            console.error('Error fetching user info:', error);
+          });
+    }
+
     render(){
+        const {doctorName, imageUrl, doctorEmail} = this.state;
         return(
             <div className="profile-sidebar">
                 <div className="widget-profile pro-widget-content">
                     <div className="profile-info-widget">
                         <Link to="#" className="booking-doc-img">
-                            <img src={IMG01} alt="User" />
+                            <img src={imageUrl} alt="User" />
                         </Link>
                         <div className="profile-det-info">
-                            <h3>Dr. Darren Elder</h3>
+                            <h3>{doctorName}</h3>
                             
                             <div className="patient-details">
-                                <h5 className="mb-0">BDS, MDS - Oral & Maxillofacial Surgery</h5>
+                                <h5 className="mb-0">{doctorEmail}</h5>
                             </div>
                         </div>
                     </div>

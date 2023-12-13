@@ -19,19 +19,34 @@ import Registration from './registration';
 //   };
    
 //const delimiters = [KeyCodes.comma, KeyCodes.enter];
+const accessToken = localStorage.getItem('access_token');
+const user_id = localStorage.getItem('u_id');
+const role = localStorage.getItem('role');
+const dhp_id = localStorage.getItem('dhp_id');
+
 
 class ProfileSetting extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			about: '',
-			user: {},
+			user: {
+				first_name: '',
+				last_name: '',
+				email: '',
+				dob: '',
+				gender: 1, // Assuming 0 is the default value
+				city: '',
+				address: '',
+				address_2: '',
+				country: '',
+				postal_code: '',},
 			education: [],
 			experience: [],
 			awards: [],
 			services: [],
 			specializations: [],
-			socialMedia: {},
+			showSuccessPopup: false,
 		};
 	}
 
@@ -42,8 +57,13 @@ class ProfileSetting extends Component {
 	}
 
 	componentDidMount() {
+	
 		// Fetch data from the API
-		fetch('http://127.0.0.1:8000/api/v1/doctors/1')
+		fetch(`http://127.0.0.1:8000/api/v1/doctors/${dhp_id}`, {
+				headers: {
+				Authorization: `Bearer ${accessToken}`,
+				},
+		 	})
 			.then((response) => response.json())
 			.then((data) => {
 			this.setState({
@@ -54,7 +74,6 @@ class ProfileSetting extends Component {
 				awards: data.awards || [],
 				services: data.service || [],
 				specializations: data.specialization || [],
-				socialMedia: data.social_media || {},
 			});
 			})
 			.catch((error) => {
@@ -63,7 +82,7 @@ class ProfileSetting extends Component {
 	}
 
 	handleSaveChanges = () => {
-		const { about, user, education, experience, awards, services, specializations, socialMedia } = this.state;
+		const { about, user, education, experience, awards, services, specializations } = this.state;
 		// const edu = [];
 		const educationData = education.map(edu => ({
 			id:edu.id,
@@ -111,13 +130,13 @@ class ProfileSetting extends Component {
 		  awards: awardsData,
 		  service: servicesData, // assuming 'services' should be named 'service' in the API payload
 		  specialization: specializationData,
-		  social_media: socialMedia,
 		};
 	
-		fetch('http://127.0.0.1:8000/api/v1/doctors/1', {
+		fetch(`http://127.0.0.1:8000/api/v1/doctors/${dhp_id}`, {
 		  method: 'PUT',
 		  headers: {
 			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${accessToken}`,
 		  },
 		  body: JSON.stringify(data),
 		})
@@ -125,6 +144,12 @@ class ProfileSetting extends Component {
 		  .then((responseData) => {
 			// Handle success response
 			console.log('Data updated successfully:', responseData);
+			this.setState({ showSuccessPopup: true });
+
+       		 // Hide success popup after a certain time (e.g., 3000 milliseconds)
+			setTimeout(() => {
+				this.setState({ showSuccessPopup: false });
+			}, 3000);
 		  })
 		  .catch((error) => {
 			// Handle error
@@ -199,8 +224,10 @@ class ProfileSetting extends Component {
 		const formData = new FormData();
 		formData.append('image_url', this.state.selectedFile);
 		// Assuming you are using the fetch API for the API request
-		fetch('http://127.0.0.1:8000/api/v1/image/3', {
-		  method: 'PUT',
+		fetch(`http://127.0.0.1:8000/api/v1/image/${user_id}`, {
+		  method: 'PUT',headers: {
+			'Authorization': `Bearer ${accessToken}`,
+		  },
 		  body: formData,
 		})
 		  .then((response) => response.json())
@@ -217,7 +244,7 @@ class ProfileSetting extends Component {
 	
 	
     render(){
-		const { about, user, education, experience, awards, services, specializations } = this.state;
+		const { about, user, education, experience, awards, services, specializations, showSuccessPopup } = this.state;
 	return(
     <div>
             <div className="breadcrumb-bar">
@@ -384,7 +411,15 @@ class ProfileSetting extends Component {
 						<Education educationData={education} onChange={this.handleEducationChange} />
 						<Experience experienceData={experience}  onChange={this.handleExperienceChange} />
 						<Award awardsData={awards} onChange={this.handleAwardChange}/>
-					
+							
+							{showSuccessPopup && (
+								<div className="alert alert-success alert-dismissible fade show" role="alert">
+									<strong>Success!</strong> Your <a href="#" className="alert-link">profile</a> has been successfully updated.
+									<button type="button" className="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true">×</span>
+									</button>
+								</div>
+							)}			
 							
 							<div className="submit-section submit-btn-bottom">
 								<button type="submit" className="btn btn-primary submit-btn" onClick={this.handleSaveChanges}>Save Changes</button>

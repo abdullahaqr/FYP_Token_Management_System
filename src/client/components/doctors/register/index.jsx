@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import loginBanner from '../../../assets/images/login-banner.png';
 import { Link, Redirect } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
+import config from "config";
 
 class DoctorRegister extends Component {
 	state = {
@@ -24,39 +25,103 @@ class DoctorRegister extends Component {
         this.setState({ [e.target.id]: e.target.value });
     };
 
-    handleFormSubmit = async (e) => {
-        e.preventDefault();
 
-        const apiUrl = 'http://127.0.0.1:8000/api/v1/sign-up';
+	handleFormSubmit = (e) => {
+		e.preventDefault();
+		fetch('http://127.0.0.1:8000/api/v1/sign-up', {
+		  method: 'POST',
+		  headers: {
+			'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({
+            first_name: this.state.first_name,
+            last_name: this.state.last_name,
+            email: this.state.email,
+            phone_number: this.state.phone_number,
+            password: this.state.password,
+            role: "3", //Doctor
+        }),
+		})
+		.then(response => response.json())
+		.then(data => {
+	
+			// Redirect to the desired page, e.g., home
+			window.location.href = `${config.publicPath}/login`;
+		})
+		.catch(error => {
+		  console.error('Error during login:', error);
+		});
+	
+		// const apiUrl = 'http://127.0.0.1:8000/api/v1/sign-up';
+	
+		// try {
+		// 	const response = await fetch(apiUrl, {
+		// 		method: 'POST',
+		// 		headers: {
+		// 			'Content-Type': 'application/json',
+		// 		},
+		// 		body: JSON.stringify({
+		// 			first_name: this.state.first_name,
+		// 			last_name: this.state.last_name,
+		// 			email: this.state.email,
+		// 			phone_number: this.state.phone_number,
+		// 			password: this.state.password,
+		// 			role:"3", //doctor
+		// 		}),
+		// 	});
+	
+		// 	if (!response.ok) {
+		// 		// Handle non-successful response
+		// 		throw new Error(`HTTP error! Status: ${response.status}`);
+		// 	}
+	
+		// 	const responseData = await response.json();
+	
+		// 	// Handle the response as needed, e.g., show a success message
+		// 	console.log('API response:', responseData);
+	
+		// 	// Set redirect to true
+		// 	this.setState({ redirect: true });
+	
+		// } catch (error) {
+		// 	// Handle errors, e.g., show an error message
+		// 	console.error('API error:', error);
+		// }
+	};
 
-        try {
-            const response = await axios.post(apiUrl, {
-                first_name: this.state.first_name,
-                last_name: this.state.last_name,
-                email: this.state.email,
-                phone_number: this.state.phone_number,
-                password: this.state.password,
-                role:"3", //doctor
-            });
+    // handleFormSubmit = async (e) => {
+    //     e.preventDefault();
 
-            // Handle the response as needed, e.g., show a success message
-            console.log('API response:', response.data);
+    //     const apiUrl = 'http://127.0.0.1:8000/api/v1/sign-up';
 
-            // Set redirect to true
-            this.setState({ redirect: true });
+    //     try {
+    //         const response = await axios.post(apiUrl, {
+    //             first_name: this.state.first_name,
+    //             last_name: this.state.last_name,
+    //             email: this.state.email,
+    //             phone_number: this.state.phone_number,
+    //             password: this.state.password,
+    //             role:"3", //doctor
+    //         });
 
-        } catch (error) {
-            // Handle errors, e.g., show an error message
-            console.error('API error:', error);
-        }
-    };
+    //         // Handle the response as needed, e.g., show a success message
+    //         console.log('API response:', response.data);
+
+    //         // Set redirect to true
+    //         this.setState({ redirect: true });
+
+    //     } catch (error) {
+    //         // Handle errors, e.g., show an error message
+    //         console.error('API error:', error);
+    //     }
+    // };
 
     render(){
 		if (this.state.redirect) {
             return <Redirect to="/login" />;
         }
         return(
-                	<div className="content">
+                	<div className="content" style={{padding: '100px 0 50px 0'}}>
 				<div className="container-fluid">
 					<div className="row">
 						<div className="col-md-8 offset-md-2">

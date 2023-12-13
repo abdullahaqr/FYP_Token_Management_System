@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom';
 import { IMG01, IMG02, IMG03, IMG04, IMG05, IMG06, IMG07, IMG08, IMG012  } from './img';
 import DoctorSidebar from '../sidebar';
 
+
+const accessToken = localStorage.getItem('access_token');
+const role = localStorage.getItem('role');
+
 class MypPatient extends Component{
 	constructor(props) {
         super(props);
@@ -17,12 +21,21 @@ class MypPatient extends Component{
     }
 
     fetchPatients() {
+		let  urlEndpoint = '';
+		if(role == 3){
+			urlEndpoint = 'http://127.0.0.1:8000/api/v1/doctor-patient';
+		}else if(role == 2){
+			urlEndpoint = 'http://127.0.0.1:8000/api/v1/hospital-patient';
+		}
 		// Make a GET request to the API endpoint
-		fetch('http://127.0.0.1:8000/api/v1/doctor-patient')
+		fetch(urlEndpoint, {
+			headers: {
+			  Authorization: `Bearer ${accessToken}`,
+			},
+		  })
 			.then((response) => response.json())
 			.then((data) => {
 				// Update the state with the fetched patient data
-				console.log(data);
 				this.setState({ patients: data.Patients || [] });
 			})
 			.catch((error) => {
@@ -64,7 +77,8 @@ class MypPatient extends Component{
 						<div className="col-md-7 col-lg-8 col-xl-9">
 						
 							<div className="row row-grid">
-								{patients.map((patient) => (
+							{patients.length > 0 ? (
+								patients.map((patient) => (
 									<div key={patient.first_name} className="col-md-6 col-lg-4 col-xl-3">
 										<div className="card widget-profile pat-widget-profile">
 											{/* Render patient information based on the fetched data */}
@@ -78,9 +92,9 @@ class MypPatient extends Component{
 														</Link>
 														<div className="profile-det-info">
 															<h3>
-																<Link to={`/doctor/patient-profile/${patient.first_name}`}>
+																{/* <Link to={`/doctor/patient-profile/${patient.first_name}`}> */}
 																	{`${patient.first_name} ${patient.last_name}`}
-																</Link>
+																{/* </Link> */}
 															</h3>
 															<div className="patient-details">
 																<h5>
@@ -112,7 +126,10 @@ class MypPatient extends Component{
 											</div>
 										</div>
 									</div>
-								))}
+								))
+							) : (
+								<p style={{padding:'1.5rem 1.5rem 1.7rem 1.5rem', background:'#ffffff', width:'100%', margin:'0 15px'}}>No patient available.</p>
+							)}
 							</div>
 
 						</div>

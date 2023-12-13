@@ -1,6 +1,9 @@
 import React,{ Component } from 'react';
 import DashboardSidebar from '../sidebar/index';
 
+const accessToken = localStorage.getItem('access_token');
+const user_id = localStorage.getItem('u_id');
+
 class Password extends Component{
 	constructor(props) {
 		super(props);
@@ -30,10 +33,11 @@ class Password extends Component{
 		}
 	
 		// Make the API call
-		fetch(`http://127.0.0.1:8000/api/v1/users/${userId}/change-password`, {
+		fetch(`http://127.0.0.1:8000/api/v1/users/${user_id}/change-password`, {
 		  method: 'PUT',
 		  headers: {
 			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${accessToken}`,
 		  },
 		  body: JSON.stringify({
 			password,

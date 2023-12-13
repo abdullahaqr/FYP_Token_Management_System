@@ -4,7 +4,54 @@ import loginBanner from '../../assets/images/login-banner.png';
 import config from "config";
 
 import { Link } from 'react-router-dom';
-class LoginContainer extends Component {  
+class LoginContainer extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+		  email: '',
+		  password: ''
+		};
+	}
+	
+	handleInputChange = (event) => {
+		const { name, value } = event.target;
+		this.setState({ [name]: value });
+	  }
+	
+	  handleFormSubmit = (event) => {
+		event.preventDefault();
+	
+		const { email, password } = this.state;
+	
+		// Make a POST request to the login API endpoint
+		fetch('http://127.0.0.1:8000/api/v1/sign-in', {
+		  method: 'POST',
+		  headers: {
+			'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({ email, password }),
+		})
+		.then(response => response.json())
+		.then(data => {
+		  // Check if the response contains an 'access_token'
+		  if (data.access_token) {
+			// Save the 'access_token' in local storage
+			localStorage.setItem('u_id', data.id);
+			localStorage.setItem('role', data.role);
+			localStorage.setItem('access_token', data.access_token);
+			localStorage.setItem('dhp_id', data.dhp_id);
+	
+			// Redirect to the desired page, e.g., home
+			window.location.href = `${config.publicPath}/doctor/doctor-dashboard`;
+		  } else {
+			// Handle login failure, show an error message, etc.
+			console.error('Login failed');
+		  }
+		})
+		.catch(error => {
+		  console.error('Error during login:', error);
+		});
+	}
 
 	componentDidMount(){
 		document.body.classList.add('account-page');
@@ -15,7 +62,7 @@ class LoginContainer extends Component {
  render(){
 	return(
 
-		     <div className="content">
+		     <div className="content" style={{padding: '100px 0 50px 0'}}>
 				<div className="container-fluid">
 					
 					<div className="row">
@@ -31,13 +78,25 @@ class LoginContainer extends Component {
 										<div className="login-header">
 											<h3>Login <span>Doccure</span></h3>
 										</div>
-										<form action={`${config.publicPath}/home`}>
+										<form onSubmit={this.handleFormSubmit}>
 											<div className="form-group form-focus">
-												<input type="email" className="form-control floating" />
+												<input
+													type="email"
+													name="email"
+													className="form-control floating"
+													value={this.state.email}
+													onChange={this.handleInputChange}
+												/>
 												<label className="focus-label">Email</label>
 											</div>
 											<div className="form-group form-focus">
-												<input type="password" className="form-control floating" />
+												<input
+													type="password"
+													name="password"
+													className="form-control floating"
+													value={this.state.password}
+													onChange={this.handleInputChange}
+												/>
 												<label className="focus-label">Password</label>
 											</div>
 											<div className="text-right">
